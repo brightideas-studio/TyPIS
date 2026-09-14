@@ -378,7 +378,8 @@
       return `<div class="brand-logo-grid" aria-label="Brands and product lineups">${guideBrandNames(item).map(brand=>{const logo=brandLogoFiles[brand];return `<button type="button" class="brand-logo-card" data-lineup-section="${esc(item.name)}" data-lineup-brand="${esc(brand)}" aria-label="Open ${esc(brand)} SKU lineup"><span class="brand-logo-mark">${logo?`<img src="${esc(logo)}" alt="${esc(brand)} logo">`:esc(brandInitials(brand))}</span></button>`}).join('')}</div>`;
     }
     function linkedSpecificationSku(lineupSku){
-      const normalized=normaliseSearch(lineupSku),specSku=Object.keys(productSpecifications).find(sku=>normaliseSearch(sku)===normalized),stockSku=stockItems.find(item=>normaliseSearch(item.sku)===normalized)?.sku;return specSku&&stockSku?specSku:'';
+      const normalized=normaliseSearch(lineupSku);
+      return Object.keys(productSpecifications).find(sku=>normaliseSearch(sku)===normalized)||'';
     }
     function renderLineup(){
       const query=document.querySelector('#lineup-search').value.trim().toLowerCase();
