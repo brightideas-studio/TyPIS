@@ -102,8 +102,9 @@
     .lineup-modal.open{display:flex}.lineup-dialog{position:relative;width:min(680px,100%);max-height:min(760px,90vh);overflow:auto;border-radius:24px;background:#fff;box-shadow:0 28px 80px #00131d55}
     .lineup-close{position:absolute;right:18px;top:18px;width:42px;height:42px;border:0;border-radius:50%;background:#edf4f7;color:#0a5a82;font-size:25px;z-index:2}.lineup-close:hover{background:#0a5a82;color:#fff}
     .lineup-head{padding:30px 72px 23px 30px;border-bottom:1px solid #e5ecef}.lineup-head p{margin:0 0 7px;color:#0a5a82;font-size:10px;font-weight:900;letter-spacing:.12em}.lineup-head h2{margin:0;color:#173b4b;font-size:25px}.lineup-head span{display:block;margin-top:7px;color:#71828b;font-size:12px}
-    .lineup-body{padding:24px 30px 30px}.lineup-search{display:flex;align-items:center;border:1px solid #d7e3e8;background:#f7fafb;border-radius:11px;padding:0 13px;margin-bottom:16px}.lineup-search input{width:100%;height:42px;border:0;outline:0;background:transparent;color:#18313f}
-    .sku-lineup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.sku-lineup button{position:relative;border:1px solid #dfe8ec;background:#fff;color:#174052;border-radius:10px;padding:11px 9px;font-size:11px;font-weight:800;text-align:left}.sku-lineup button:hover{border-color:#0a5a82;color:#0a5a82;background:#f2f8fb}.sku-lineup button.has-spec-link{padding-right:32px;border-color:#b7d3df;background:#f6fbfd}.sku-lineup button.has-spec-link:after{content:"↗";position:absolute;right:11px;top:50%;transform:translateY(-50%);color:#0a5a82;font-size:14px}
+    .lineup-body{padding:24px 30px 30px}.lineup-search{display:flex;align-items:center;border:1px solid #d7e3e8;background:#f7fafb;border-radius:11px;padding:0 13px;margin-bottom:13px}.lineup-search input{width:100%;height:42px;border:0;outline:0;background:transparent;color:#18313f}
+    .lineup-categories{display:flex;gap:7px;overflow-x:auto;margin:0 0 20px;padding:2px 0}.lineup-categories:empty{display:none}.lineup-category{flex:0 0 auto;border:1px solid #cddde4;background:#fff;color:#59717d;border-radius:20px;padding:8px 13px;font-size:10px;font-weight:800}.lineup-category:hover{border-color:#7daec3;color:#0a5a82}.lineup-category.active{border-color:#0a5a82;background:#0a5a82;color:#fff}
+    .sku-lineup{display:block}.lineup-groups{display:grid;gap:22px}.lineup-group-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 9px}.lineup-group-head h3{margin:0;color:#0a5a82;font-size:11px;letter-spacing:.1em;text-transform:uppercase}.lineup-group-head span{color:#8a979e;font-size:9px}.sku-lineup-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.sku-lineup button{position:relative;border:1px solid #dfe8ec;background:#fff;color:#174052;border-radius:10px;padding:11px 9px;font-size:11px;font-weight:800;text-align:left}.sku-lineup button:hover{border-color:#0a5a82;color:#0a5a82;background:#f2f8fb}.sku-lineup button.has-spec-link{padding-right:32px;border-color:#b7d3df;background:#f6fbfd}.sku-lineup button.has-spec-link:after{content:"↗";position:absolute;right:11px;top:50%;transform:translateY(-50%);color:#0a5a82;font-size:14px}
     .lineup-empty{padding:40px 15px;text-align:center;border:1px dashed #cbdce3;border-radius:13px;color:#75868e}.lineup-empty strong{display:block;color:#294d5d;font-size:14px;margin-bottom:6px}.lineup-empty span{font-size:11px}
     /* Expanded guidance: questions and important notes */
     .guide-card.open .guide-detail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;align-items:stretch;gap:14px;padding-top:18px}
@@ -118,20 +119,56 @@
     .guide-detail-section li:before{content:"?";position:absolute;left:10px;top:10px;display:grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#cce7f2;color:#0a5a82;font-size:10px;font-weight:900}
     .guide-detail-section.notes li{color:#62491f;background:#fffdfa}.guide-detail-section.notes li:before{content:"!";background:#f5dfb9;color:#9a611d}
     .stock-group-head h3{font-size:16px;line-height:1.35;letter-spacing:.055em}
-    @media(max-width:700px){.brand-logo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sku-lineup{grid-template-columns:repeat(2,minmax(0,1fr))}.guide-card.open .guide-detail{grid-template-columns:1fr}}
-    @media(max-width:430px){.brand-logo-grid{grid-template-columns:1fr 1fr}.brand-logo-card{height:92px;min-height:92px;padding:12px 9px}.brand-logo-mark{height:64px}.brand-logo-mark img{max-height:64px}.lineup-modal{padding:10px}.lineup-dialog{border-radius:18px}.lineup-head{padding:24px 62px 20px 20px}.lineup-head h2{font-size:20px}.lineup-body{padding:19px 20px 22px}.sku-lineup{grid-template-columns:1fr}}
+    @media(max-width:700px){.brand-logo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sku-lineup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.guide-card.open .guide-detail{grid-template-columns:1fr}}
+    @media(max-width:430px){.brand-logo-grid{grid-template-columns:1fr 1fr}.brand-logo-card{height:92px;min-height:92px;padding:12px 9px}.brand-logo-mark{height:64px}.brand-logo-mark img{max-height:64px}.lineup-modal{padding:10px}.lineup-dialog{border-radius:18px}.lineup-head{padding:24px 62px 20px 20px}.lineup-head h2{font-size:20px}.lineup-body{padding:19px 20px 22px}.sku-lineup-grid{grid-template-columns:1fr}}
+    /* Minimal search homepage */
+    .search-landing{display:flex!important;position:relative;min-height:100vh;padding:24px clamp(20px,5vw,72px);background:linear-gradient(180deg,#fff 0%,#fff 62%,#f4faff 100%);color:#17212b}
+    body.exploring .search-landing{display:none!important}
+    .search-home-main{width:min(920px,100%);margin:auto;text-align:center;transform:translateY(-20%)}
+    .search-home-logo{display:block;width:min(475px,70vw);margin:0 auto 52px;transform:translateY(-20%)}
+    .search-home-logo img{display:block;width:100%;height:auto;max-height:151px;object-fit:contain}
+    .search-home-bar{height:78px;width:100%;display:flex;align-items:center;gap:14px;padding:0 10px 0 25px;border:1px solid transparent;border-radius:40px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#dce9ef,#80b9d3) border-box;box-shadow:0 12px 36px #152c3a12;transform:translateY(-5%);transition:box-shadow .2s}
+    .search-home-bar:focus-within{background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#0a5a82,#53b4df) border-box;box-shadow:0 14px 42px #0a5a821c}
+    .search-home-icon{color:#667681;font-size:30px;line-height:1;transform:rotate(-15deg)}
+    .search-home-bar input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#18313f;font-size:19px}
+    .search-home-bar input::placeholder{color:#8b949c}
+    .search-home-bar button{height:58px;min-width:126px;padding:0 25px;border:0;border-radius:29px;background:linear-gradient(135deg,#0b73a6,#074563);color:#fff;font-size:15px;font-weight:800;box-shadow:0 7px 17px #0a5a8226;transition:filter .18s,transform .18s}
+    .search-home-bar button:hover{filter:brightness(.93);transform:translateY(-1px)}
+    .motivation-quote{min-height:52px;margin:28px auto 0;color:#293b47;font-size:16px;line-height:1.55;font-weight:600}
+    .product-guide-fab{position:absolute;right:clamp(20px,4vw,56px);bottom:clamp(24px,4vw,46px);display:flex;align-items:center;gap:12px;height:52px;padding:0 21px;border:1.5px solid transparent;border-radius:27px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#0a5a82,#59b9df) border-box;color:#0a5a82;font-size:13px;font-weight:800;box-shadow:0 7px 22px #0a5a820d;transition:.2s}
+    .product-guide-fab:hover{background:linear-gradient(135deg,#0b73a6,#074563) padding-box,linear-gradient(120deg,#0b73a6,#074563) border-box;color:#fff;transform:translateY(-2px);box-shadow:0 11px 26px #0a5a8224}
+    .product-guide-fab .gallery-grid-icon{display:grid;grid-template-columns:repeat(2,5px);gap:3px}
+    .product-guide-fab .gallery-grid-icon i{width:5px;height:5px;border:1.5px solid currentColor;border-radius:1px}
+    .search-home-footer{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:#b0b6bb;font-size:10px;white-space:nowrap}
+    @media(max-width:680px){.search-landing{padding:20px}.search-home-main{transform:translateY(-27%)}.search-home-logo{width:min(389px,88vw);margin-bottom:38px;transform:translateY(-15%)}.search-home-logo img{max-height:149px}.search-home-bar{height:64px;padding:0 7px 0 18px;transform:translateY(-5%)}.search-home-icon{font-size:24px}.search-home-bar input{font-size:15px}.search-home-bar button{height:50px;min-width:86px;padding:0 17px;font-size:12px}.motivation-quote{margin-top:22px;padding:0 10px;font-size:14px}.product-guide-fab{right:18px;bottom:22px;height:48px;padding:0 17px}.search-home-footer{display:none}}
   </style>
   <script src="ty-export-logo-data.js"></script>
 </head>
 <body>
-  <section class="landing split-landing" id="landing">
-    <header class="split-header"><div class="split-brand"><img class="split-mark" src="ty-logo.png" alt="TY"><div><strong>Equipment Wiki</strong><small>Internal product knowledge</small></div></div><span class="split-reviewed">✓ Reviewed 7 Sep 2026</span></header>
-    <div class="split-grid">
-      <section class="split-pane stock-pane"><div class="split-content"><p class="split-label">EX-STOCK &amp; PRICING</p><h1>Checking stock<br>or price?</h1><p>Search a SKU or product to check available quantity, clearance price and retail price.</p><div class="split-search"><input id="hero-search" placeholder="Search SKU or product…" autocomplete="off" aria-label="Search SKU or product"><button id="hero-go" type="button">Search</button></div><small class="split-meta">524 stock records · Updated 7 Sep 2026</small></div></section>
-      <section class="split-pane guide-pane"><div class="split-content"><p class="split-label">PRODUCT GUIDE</p><h1>What to propose.<br>What to check.</h1><p>What to focus, lead time, questions to ask and important installation notes.</p><button class="split-outline" type="button" data-guide-entry>Open product guide</button></div><div id="landing-categories" hidden></div></section>
-    </div>
-    <footer class="split-footer">Internal use only · Confirm availability and lead time before quotation</footer>
+  <section class="landing search-landing" id="landing">
+    <main class="search-home-main">
+      <div class="search-home-logo"><img src="ty-os-logo.png" alt="TY OS+"></div>
+      <div class="search-home-bar"><span class="search-home-icon" aria-hidden="true">⌕</span><input id="hero-search" placeholder="Search SKU or product…" autocomplete="off" aria-label="Search SKU or product" onkeydown="if(event.key==='Enter'){openHomepageStock()}"><button id="hero-go" type="button" onclick="openHomepageStock()">Search</button></div>
+      <p class="motivation-quote" id="motivation-quote"></p>
+    </main>
+    <button class="product-guide-fab" type="button" onclick="openHomepageGuide()"><span class="gallery-grid-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Product Guide <span aria-hidden="true">→</span></button>
+    <div id="landing-categories" hidden></div>
+    <footer class="search-home-footer">Last updated 7 Sep 2026</footer>
   </section>
+  <script>
+    function openHomepageStock(){
+      const input=document.querySelector('#hero-search');
+      if(typeof enterStock==='function')enterStock(input.value);
+    }
+    function openHomepageGuide(){
+      document.body.classList.add('exploring');
+      const search=document.querySelector('#search');
+      if(search)search.value='';
+      if(typeof guideCategory!=='undefined')guideCategory='All';
+      if(typeof switchModule==='function')switchModule('guide');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+  </script>
   <header class="topbar"><div class="brand" id="home-logo" role="button" tabindex="0" aria-label="Back to home"><span class="brand-home-arrow" aria-hidden="true">←</span><img class="brand-mark" src="ty-logo.png" alt="TY"><div class="brand-copy"><strong>Equipment Wiki</strong><small>Back to home</small></div></div><label class="search"><span>⌕</span><input id="search" placeholder="Search equipment, model, brand or requirement…" aria-label="Search knowledge base"><kbd>⌘ K</kbd></label></header>
   <div class="shell"><aside class="sidebar"><nav><a class="nav-link active" href="#"><span>⌂</span>Home</a><a class="nav-link" href="#products"><span>▦</span>All products</a><a class="nav-link" href="#products"><span>◇</span>Help me choose</a><a class="nav-link" href="#"><span>↻</span>Recent updates</a></nav><div class="side-section"><p>Categories</p><div id="side-categories"></div></div><div class="side-help"><strong>Can’t find an answer?</strong><p>Prepare a complete enquiry brief for confirmation.</p><button id="escalate">View escalation checklist →</button></div></aside>
   <section class="content"><button class="back-home" id="back-home">← New search</button><div class="module-tabs" aria-label="Knowledge sections"><button class="module-tab active" id="stock-tab"><span class="tab-icon">▦</span> Ex-stock &amp; prices</button><button class="module-tab" id="guide-tab"><span class="tab-icon">◎</span> Product guidance &amp; lead time</button></div><div class="welcome"><div><p class="eyebrow">TY INTERNAL KNOWLEDGE BASE</p><h1>Product guidance</h1><p class="intro">Find the product focus, order type, lead time and questions to ask—all in one place.</p></div><div class="updated"><span>✓</span><div><strong>Knowledge reviewed</strong><small>7 September 2026</small></div></div></div>
@@ -143,7 +180,7 @@
     <section class="lineup-dialog" role="dialog" aria-modal="true" aria-labelledby="lineup-title">
       <button class="lineup-close" id="lineup-close" type="button" aria-label="Close brand lineup">×</button>
       <div class="lineup-head"><p>PRODUCT LINEUP</p><h2 id="lineup-title"></h2><span id="lineup-section"></span></div>
-      <div class="lineup-body"><label class="lineup-search"><input id="lineup-search" type="search" placeholder="Search SKU…" aria-label="Search SKU"></label><div class="sku-lineup" id="sku-lineup"></div></div>
+      <div class="lineup-body"><label class="lineup-search"><input id="lineup-search" type="search" placeholder="Search SKU…" aria-label="Search SKU"></label><div class="lineup-categories" id="lineup-categories" aria-label="Product type"></div><div class="sku-lineup" id="sku-lineup"></div></div>
     </section>
   </div>
   <div class="spec-modal" id="spec-modal" aria-hidden="true">
@@ -359,7 +396,7 @@
       'TY Innovations':'brand-logos/ty-innovations.png'
     };
     const productLineups={"Upright refrigerators||Panasonic":["SRR-LV681-SG","SRR-LV781-SG","SRR-LV1281S-SG","SRR-LV1581S-SG","SRF-LV681-SG","SRF-LV781-SG","SRF-LV1261S-SG","SRF-LV1281S-SG","SRR-LV1281C2-SG","SRR-LV781C-SG"],"Undercounter refrigerators||Panasonic":["SUF-LV961-SG","SUF-LV971-SG","SUF-LV1261S-SG","SUF-LV1271S-SG","SUF-LV1561S-SG","SUF-LV1571S-SG","SUF-LV1861S-SG","SUF-LV1871S-SG","SUR-LV1261S-SG","SUR-LV1271S-SG","SUR-LV1561S-SG","SUR-LV1571S-SG","SUR-LV1861S-SG","SUR-LV1871S-SG"],"Upright refrigerators||Daiwa":["LNXA-0661CD","LNXA-0681CD","LNXA-0761CD","LNXA-0781CD","LNXA-961CD-N","LNXA-981CD-N","LNXA-1261CD-N","LNXA-1281CD-N","LNXA-1581CD-N","LNXA-1881CD","LNXA-0661SS","LNXA-0681SS","LNXA-0761SS","LNXA-0781SS","LNXA-961SS-N","LNXA-981SS-N","LNXA-1261SS-N","LNXA-1281SS-N","LNXA-1583SS-N","LNXA-1883SS","LNXA-0961S2","LNXA-0981S2","LNXA-1261S2","LNXA-1281S2","LNXA-1581S2","LNXA-1881S2"],"Undercounter refrigerators||Daiwa":["KNXA-0961CD","KNXA-0961CD-R","KNXA-0971CD","KNXA-0971CD-R","KNXA-1261CD-N","KNXA-1261CD-NR","KNXA-1271CD-N","KNXA-1271CD-NR","KNXA-1561CD-N","KNXA-1561CD-NR","KNXA-1571CD-N","KNXA-1571CD-NR","KNXA-1861CD-N","KNXA-1861CD-NR","KNXA-1871CD-N","KNXA-1871CD-NR","KNXA-0961SS","KNXA-0971SS","KNXA-1261SS-N","KNXA-1271SS-N","KNXA-1561SS-N","KNXA-1571SS","KNXA-1861SS-N","KNXA-1861SS","KNXA-1871SS"]};
-    let openLineup={section:'',brand:'',skus:[]};
+    let openLineup={section:'',brand:'',skus:[]},lineupCategory='All';
     const knownGuideBrands=['Panasonic','Daiwa','YODA','TY Innovations','Nuovair','Platinum','Electrolux','IFI','Framec','ISA','Valmar','Gelmatic','Rational','UNOX','Merrychef'];
     function brandFromText(text){
       const value=String(text).trim(),upper=value.toUpperCase();
@@ -381,15 +418,36 @@
       const normalized=normaliseSearch(lineupSku);
       return Object.keys(productSpecifications).find(sku=>normaliseSearch(sku)===normalized)||'';
     }
+    function lineupProductCategory(lineupSku){
+      const linkedSku=linkedSpecificationSku(lineupSku),name=String(productSpecifications[linkedSku]?.name||'').toLowerCase(),sku=String(lineupSku).toUpperCase();
+      if(name.includes('combination')||/S2(?:-|$)/.test(sku)||/C2(?:-|$)/.test(sku))return 'Combination';
+      if(name.includes('chiller')||name.includes('refrigerator')||sku.startsWith('SRR-')||sku.startsWith('SUR-')||sku.includes('CD'))return 'Chiller';
+      if(name.includes('freezer')||sku.startsWith('SRF-')||sku.startsWith('SUF-')||sku.includes('SS'))return 'Freezer';
+      return 'Other models';
+    }
+    function lineupSkuButton(sku){
+      const linkedSku=linkedSpecificationSku(sku);
+      return linkedSku?`<button type="button" class="has-spec-link" data-open-spec-sku="${esc(linkedSku)}" title="Open product specification">${esc(sku)}</button>`:`<button type="button" data-copy-sku="${esc(sku)}" title="Click to copy">${esc(sku)}</button>`;
+    }
+    function renderLineupCategories(){
+      const order=['Chiller','Freezer','Combination','Other models'],available=order.filter(type=>openLineup.skus.some(sku=>lineupProductCategory(sku)===type)),root=document.querySelector('#lineup-categories');
+      if(available.length<2){root.innerHTML='';lineupCategory='All';return}
+      if(lineupCategory!=='All'&&!available.includes(lineupCategory))lineupCategory='All';
+      root.innerHTML=['All',...available].map(type=>`<button type="button" class="lineup-category ${lineupCategory===type?'active':''}" data-lineup-category="${esc(type)}">${esc(type)}</button>`).join('');
+      root.querySelectorAll('[data-lineup-category]').forEach(button=>button.onclick=()=>{lineupCategory=button.dataset.lineupCategory;renderLineup()});
+    }
     function renderLineup(){
       const query=document.querySelector('#lineup-search').value.trim().toLowerCase();
-      const rows=openLineup.skus.filter(sku=>String(sku).toLowerCase().includes(query));
-      document.querySelector('#sku-lineup').innerHTML=rows.length?rows.map(sku=>{const linkedSku=linkedSpecificationSku(sku);return linkedSku?`<button type="button" class="has-spec-link" data-open-spec-sku="${esc(linkedSku)}" title="Open product specification">${esc(sku)}</button>`:`<button type="button" data-copy-sku="${esc(sku)}" title="Click to copy">${esc(sku)}</button>`}).join(''):`<div class="lineup-empty"><strong>${openLineup.skus.length?'No matching SKU':'SKU list coming soon'}</strong><span>${openLineup.skus.length?'Try another model number.':'Fill in the Excel template and upload it with the brand logos.'}</span></div>`;
+      renderLineupCategories();
+      const rows=openLineup.skus.filter(sku=>String(sku).toLowerCase().includes(query)&&(lineupCategory==='All'||lineupProductCategory(sku)===lineupCategory));
+      const order=['Chiller','Freezer','Combination','Other models'],groups=order.map(type=>({type,rows:rows.filter(sku=>lineupProductCategory(sku)===type)})).filter(group=>group.rows.length);
+      document.querySelector('#sku-lineup').innerHTML=rows.length?`<div class="lineup-groups">${groups.map(group=>`<section class="lineup-group"><div class="lineup-group-head"><h3>${esc(group.type)}</h3><span>${group.rows.length} model${group.rows.length===1?'':'s'}</span></div><div class="sku-lineup-grid">${group.rows.map(lineupSkuButton).join('')}</div></section>`).join('')}</div>`:`<div class="lineup-empty"><strong>${openLineup.skus.length?'No matching SKU':'SKU list coming soon'}</strong><span>${openLineup.skus.length?'Try another model number or category.':'Fill in the Excel template and upload it with the brand logos.'}</span></div>`;
       document.querySelectorAll('[data-open-spec-sku]').forEach(button=>button.onclick=()=>{const sku=button.dataset.openSpecSku;closeBrandLineup();openSpecifications(sku)});
       document.querySelectorAll('[data-copy-sku]').forEach(button=>button.onclick=async()=>{try{await navigator.clipboard.writeText(button.dataset.copySku)}catch(error){const area=document.createElement('textarea');area.value=button.dataset.copySku;area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();document.execCommand('copy');area.remove()}button.textContent='Copied ✓';setTimeout(()=>button.textContent=button.dataset.copySku,1200)});
     }
     function openBrandLineup(section,brand){
       openLineup={section,brand,skus:productLineups[`${section}||${brand}`]||[]};
+      lineupCategory='All';
       document.querySelector('#lineup-title').textContent=brand;
       document.querySelector('#lineup-section').textContent=section;
       document.querySelector('#lineup-search').value='';
@@ -416,6 +474,29 @@
       document.querySelectorAll('[data-lineup-brand]').forEach(button=>button.onclick=()=>openBrandLineup(button.dataset.lineupSection,button.dataset.lineupBrand));
     }
     function switchModule(module){activeModule=module;const guide=module==='guide';document.querySelector('#inventory').classList.toggle('guide-hidden',guide);document.querySelector('#guide-section').classList.toggle('active',guide);document.querySelector('#stock-tab').classList.toggle('active',!guide);document.querySelector('#guide-tab').classList.toggle('active',guide);document.querySelector('#search').placeholder=guide?'Search guidance, brand, question or requirement…':'Search ex-stock SKU, model or description…';if(guide)renderGuide();else renderStock()}
+    const motivationQuotes=[
+      'Great solutions begin with the right question.',
+      'One clear answer can move the whole project forward.',
+      'Find the right fit, then make it happen.',
+      'Good preparation makes every proposal stronger.',
+      'Small details build great customer experiences.',
+      'The right product is closer than you think.',
+      'Clarity first. Confidence follows.',
+      'Every expert started by searching for an answer.',
+      'Make today’s recommendation your best one yet.',
+      'The best proposals solve real problems.',
+      'Learn the product. Understand the customer. Connect the two.',
+      'A thoughtful question is the start of a smart solution.',
+      'Progress starts with knowing what to check.',
+      'Turn product knowledge into customer confidence.',
+      'Good choices come from good information.',
+      'Be curious, stay sharp, keep improving.',
+      'The next great solution may be one search away.',
+      'Details matter—and you’ve got them covered.',
+      'Make it simple. Make it useful. Make it count.',
+      'Knowledge shared is a team made stronger.'
+    ];
+    document.querySelector('#motivation-quote').textContent=motivationQuotes[Math.floor(Math.random()*motivationQuotes.length)];
     document.querySelector('#lineup-close').onclick=closeBrandLineup;document.querySelector('#lineup-search').addEventListener('input',renderLineup);document.querySelector('#lineup-modal').onclick=event=>{if(event.target.id==='lineup-modal')closeBrandLineup()};document.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.querySelector('#lineup-modal').classList.contains('open'))closeBrandLineup()});
     document.querySelector('#stock-tab').onclick=()=>switchModule('stock');document.querySelector('#guide-tab').onclick=()=>switchModule('guide');document.querySelector('#search').addEventListener('input',()=>{if(activeModule==='guide')renderGuide()});
     document.querySelector('#landing-categories').innerHTML=guideCategories.slice(1).map(c=>`<button class="landing-category" data-guide-category="${esc(c)}">${esc(c)}</button>`).join('');document.querySelectorAll('[data-guide-category]').forEach(btn=>btn.onclick=()=>{guideCategory=btn.dataset.guideCategory;document.body.classList.add('exploring');document.querySelector('#search').value='';switchModule('guide');scrollTo({top:0,behavior:'smooth'})});document.querySelectorAll('[data-guide-entry]').forEach(btn=>btn.onclick=()=>{guideCategory='All';document.body.classList.add('exploring');document.querySelector('#search').value='';switchModule('guide');scrollTo({top:0,behavior:'smooth'})});document.querySelector('#hero-go').onclick=()=>enterStock(document.querySelector('#hero-search').value);document.querySelector('#hero-search').onkeydown=e=>{if(e.key==='Enter')enterStock(e.target.value)};renderGuide();
