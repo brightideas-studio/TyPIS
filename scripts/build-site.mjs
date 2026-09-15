@@ -112,7 +112,7 @@ await fs.writeFile(path.join(outputDir,'index.html'),html);
 for(const directory of ['product-images','brand-logos']){
   await fs.cp(path.join(root,directory),path.join(outputDir,directory),{recursive:true});
 }
-for(const file of ['ty-export-logo-data.js','ty-logo.png','ty-equipment-wiki-social-preview.png','landing-stock-background.png']){
+for(const file of ['ty-export-logo-data.js','ty-logo.png','ty-os-logo.png','ty-equipment-wiki-social-preview.png','landing-stock-background.png']){
   try{await fs.copyFile(path.join(root,file),path.join(outputDir,file))}catch(error){if(error.code!=='ENOENT')throw error}
 }
 console.log(`Website built: ${stockItems.length} stock records, ${specificationRows.length} specifications, ${guideItems.length} guide entries, ${lineupRows.length} lineup rows.`);
