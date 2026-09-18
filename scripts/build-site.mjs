@@ -9,6 +9,7 @@ const outputDir=path.join(root,'dist');
 
 const text=value=>value===null||value===undefined?'':String(value).trim();
 const lines=value=>text(value).split(/\r?\n/).map(v=>v.trim()).filter(Boolean);
+const brandName=value=>/^ty innovations$/i.test(text(value))?'TY Innovations':text(value);
 const number=value=>value===''||value===null||value===undefined?0:Number(value);
 const price=value=>{
   if(value===''||value===null||value===undefined)return '';
@@ -71,13 +72,14 @@ const stockItems=exRows.map(row=>({
   sourcePage:number(row['Source Page']),image:text(row.Image)?`product-images/${text(row.Image).replace(/^product-images\//,'')}`:''
 }));
 
-const specificationSheetRows=await rowsFromSheet('Specifications',['Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power']);
+const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power']);
 // Brand section headings and prepared blank entry rows intentionally have no SKU.
 const specificationRows=specificationSheetRows.filter(row=>text(row.SKU)!=='');
 ensureUnique(specificationRows,'SKU','Specifications');
 const productSpecifications=Object.fromEntries(specificationRows.map(row=>[text(row.SKU),{
   name:text(row['Product Name']),dimension:text(row.Dimension),capacity:text(row.Capacity),temperature:text(row.Temperature),
-  refrigerant:text(row.Refrigerant),energyRating:text(row['Energy Rating']),eegClaimable:text(row['EEG Claimable']),power:text(row.Power)
+  refrigerant:text(row.Refrigerant),energyRating:text(row['Energy Rating']),eegClaimable:text(row['EEG Claimable']),power:text(row.Power),
+  category:text(row.Category),productType:text(row['Product Type']),brand:text(row.Brand)
 }]));
 
 const guideRows=await rowsFromSheet('Product Guide',['Category','Product','Brands & Series','Lead Time','Our Focus','Images','Questions to Ask','Important Notes']);
@@ -86,15 +88,35 @@ const guideItems=guideRows.map(row=>({
   images:lines(row.Images).map(entry=>{const [file,...label]=entry.split('|');return {src:`product-images/${file.trim().replace(/^product-images\//,'')}`,label:label.join('|').trim()}}),
   questions:lines(row['Questions to Ask']),notes:lines(row['Important Notes'])
 }));
+const guideCategoryByProduct=new Map(guideItems.map(item=>[item.name.toLowerCase(),item.category]));
+for(const row of specificationRows){
+  const productType=text(row['Product Type']),category=text(row.Category),expectedCategory=guideCategoryByProduct.get(productType.toLowerCase());
+  if(!expectedCategory)throw new Error(`Specifications: Product Type “${productType}” at row ${row.__row} does not match a Product Guide product`);
+  if(category!==expectedCategory)throw new Error(`Specifications: Category “${category}” at row ${row.__row} should be “${expectedCategory}” for ${productType}`);
+}
 
 const lineupSheetRows=await rowsFromSheet('Brand Lineup',['Product','Type','Brand','SKU']);
 // Brand section headings and prepared blank entry rows intentionally have no SKU.
 const lineupPlaceholders=new Set(['add sku below','enter sku here','use yellow sku cells']);
 const lineupRows=lineupSheetRows.filter(row=>text(row.SKU)!==''&&!lineupPlaceholders.has(text(row.SKU).toLowerCase()));
 const productLineups={};
+const specificationProductBySku=new Map(specificationRows.map(row=>[text(row.SKU),text(row['Product Type'])]));
 for(const row of lineupRows){
-  const product=text(row.Product),type=text(row.Type),brand=text(row.Brand),sku=text(row.SKU);
+  const product=text(row.Product),type=text(row.Type),brand=brandName(row.Brand),sku=text(row.SKU);
   if(!product||!type||!brand||!sku)throw new Error(`Brand Lineup: Product, Type, Brand and SKU are required at row ${row.__row}`);
+  // When a completed specification exists, its categorized Product Type wins
+  // over an older or duplicated manual lineup placement.
+  if(specificationProductBySku.has(sku)&&specificationProductBySku.get(sku)!==product)continue;
+  const key=`${product}||${brand}`;
+  productLineups[key]??=[];
+  if(!productLineups[key].some(item=>item.sku===sku))productLineups[key].push({sku,type});
+}
+// Specifications is the source of truth: automatically expose every completed
+// specification in its matching Product Guide brand lineup, even when someone
+// forgets to add the SKU to the separate Brand Lineup worksheet.
+for(const row of specificationRows){
+  const product=text(row['Product Type']),brand=brandName(row.Brand),sku=text(row.SKU),type=text(row['Product Name']);
+  if(!product||!brand||!sku)throw new Error(`Specifications: Category, Product Type, Brand and SKU are required at row ${row.__row}`);
   const key=`${product}||${brand}`;
   productLineups[key]??=[];
   if(!productLineups[key].some(item=>item.sku===sku))productLineups[key].push({sku,type});
@@ -110,10 +132,14 @@ html=html.replace(/\d+ stock records · Updated/g,`${stockItems.length} stock re
 await fs.rm(outputDir,{recursive:true,force:true});
 await fs.mkdir(outputDir,{recursive:true});
 await fs.writeFile(path.join(outputDir,'index.html'),html);
+// Keep the root index synchronized as well, so opening or uploading index.html
+// directly always uses the latest workbook data.
+await fs.writeFile(sourcePath,html);
 for(const directory of ['product-images','brand-logos']){
   await fs.cp(path.join(root,directory),path.join(outputDir,directory),{recursive:true});
 }
 for(const file of ['ty-export-logo-data.js','ty-logo.png','ty-os-logo.png','ty-equipment-wiki-social-preview.png','landing-stock-background.png','product-guide-hero-kitchen.png']){
   try{await fs.copyFile(path.join(root,file),path.join(outputDir,file))}catch(error){if(error.code!=='ENOENT')throw error}
 }
-console.log(`Website built: ${stockItems.length} stock records, ${specificationRows.length} specifications, ${guideItems.length} guide entries, ${lineupRows.length} lineup rows.`);
+const linkedSpecificationCount=new Set(Object.values(productLineups).flat().map(item=>item.sku).filter(sku=>productSpecifications[sku])).size;
+console.log(`Website built: ${stockItems.length} stock records, ${specificationRows.length} specifications (${linkedSpecificationCount} linked), ${guideItems.length} guide entries, ${lineupRows.length} manual lineup rows.`);
