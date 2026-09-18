@@ -95,32 +95,25 @@ for(const row of specificationRows){
   if(category!==expectedCategory)throw new Error(`Specifications: Category “${category}” at row ${row.__row} should be “${expectedCategory}” for ${productType}`);
 }
 
-const lineupSheetRows=await rowsFromSheet('Brand Lineup',['Product','Type','Brand','SKU']);
-// Brand section headings and prepared blank entry rows intentionally have no SKU.
-const lineupPlaceholders=new Set(['add sku below','enter sku here','use yellow sku cells']);
-const lineupRows=lineupSheetRows.filter(row=>text(row.SKU)!==''&&!lineupPlaceholders.has(text(row.SKU).toLowerCase()));
+const lineupSheetRows=await rowsFromSheet('Brand Lineup',['Main Category','Product Guide Section','Brand','Lineup Category','SKU']);
+const lineupRows=lineupSheetRows.filter(row=>text(row.SKU)!=='');
 const productLineups={};
 const specificationProductBySku=new Map(specificationRows.map(row=>[text(row.SKU),text(row['Product Type'])]));
 for(const row of lineupRows){
-  const product=text(row.Product),type=text(row.Type),brand=brandName(row.Brand),sku=text(row.SKU);
-  if(!product||!type||!brand||!sku)throw new Error(`Brand Lineup: Product, Type, Brand and SKU are required at row ${row.__row}`);
-  // When a completed specification exists, its categorized Product Type wins
-  // over an older or duplicated manual lineup placement.
+  const mainCategory=text(row['Main Category']),product=text(row['Product Guide Section']),type=text(row['Lineup Category']),brand=brandName(row.Brand),sku=text(row.SKU);
+  if(!mainCategory||!product||!type||!brand||!sku)throw new Error(`Brand Lineup: Main Category, Product Guide Section, Brand, Lineup Category and SKU are required at row ${row.__row}`);
+  const expectedCategory=guideCategoryByProduct.get(product.toLowerCase());
+  if(!expectedCategory)throw new Error(`Brand Lineup: Product Guide Section “${product}” at row ${row.__row} is missing from Product Guide`);
+  if(mainCategory!==expectedCategory)throw new Error(`Brand Lineup: Main Category “${mainCategory}” at row ${row.__row} should be “${expectedCategory}” for ${product}`);
+  // When a completed specification exists, its Product Guide section remains
+  // authoritative so a focus SKU cannot accidentally appear in two sections.
   if(specificationProductBySku.has(sku)&&specificationProductBySku.get(sku)!==product)continue;
   const key=`${product}||${brand}`;
   productLineups[key]??=[];
   if(!productLineups[key].some(item=>item.sku===sku))productLineups[key].push({sku,type});
 }
-// Specifications is the source of truth: automatically expose every completed
-// specification in its matching Product Guide brand lineup, even when someone
-// forgets to add the SKU to the separate Brand Lineup worksheet.
-for(const row of specificationRows){
-  const product=text(row['Product Type']),brand=brandName(row.Brand),sku=text(row.SKU),type=text(row['Product Name']);
-  if(!product||!brand||!sku)throw new Error(`Specifications: Category, Product Type, Brand and SKU are required at row ${row.__row}`);
-  const key=`${product}||${brand}`;
-  productLineups[key]??=[];
-  if(!productLineups[key].some(item=>item.sku===sku))productLineups[key].push({sku,type});
-}
+// Product Guide is a curated focus list. Specifications remains the full
+// product database, while Brand Lineup decides which SKUs are showcased here.
 
 let html=await fs.readFile(sourcePath,'utf8');
 html=replaceLiteral(html,'stockItems',stockItems);
@@ -142,4 +135,4 @@ for(const file of ['ty-export-logo-data.js','ty-logo.png','ty-os-logo.png','ty-e
   try{await fs.copyFile(path.join(root,file),path.join(outputDir,file))}catch(error){if(error.code!=='ENOENT')throw error}
 }
 const linkedSpecificationCount=new Set(Object.values(productLineups).flat().map(item=>item.sku).filter(sku=>productSpecifications[sku])).size;
-console.log(`Website built: ${stockItems.length} stock records, ${specificationRows.length} specifications (${linkedSpecificationCount} linked), ${guideItems.length} guide entries, ${lineupRows.length} manual lineup rows.`);
+console.log(`Website built: ${stockItems.length} stock records, ${specificationRows.length} specifications, ${linkedSpecificationCount} focus SKUs linked, ${guideItems.length} guide entries, ${lineupRows.length} manual lineup rows.`);
