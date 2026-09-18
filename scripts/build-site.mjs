@@ -63,13 +63,13 @@ function replaceLiteral(source,name,value){
   return source.slice(0,start)+JSON.stringify(value)+source.slice(end);
 }
 
-const exRows=await rowsFromSheet('Ex-stock',['SKU','Series','Description','Physical Qty','Available Qty','Clearance Price','Retail Price','Image','Source Page']);
+const exRows=await rowsFromSheet('Ex-stock',['SKU','Series','Description','Physical Qty','Available Qty','Clearance Price','Retail Price','Image','Source Page','Lifecycle Status']);
 ensureUnique(exRows,'SKU','Ex-stock',new Set(['SKU NOT LISTED']));
 const stockItems=exRows.map(row=>({
   section:text(row.Series),sku:text(row.SKU),description:text(row.Description),
   physicalQty:number(row['Physical Qty']),availableQty:number(row['Available Qty']),
   dealerPrice:price(row['Clearance Price']),retailPrice:price(row['Retail Price']),
-  sourcePage:number(row['Source Page']),image:text(row.Image)?`product-images/${text(row.Image).replace(/^product-images\//,'')}`:''
+  sourcePage:number(row['Source Page']),lifecycleStatus:text(row['Lifecycle Status']),image:text(row.Image)?`product-images/${text(row.Image).replace(/^product-images\//,'')}`:''
 }));
 
 const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power']);
