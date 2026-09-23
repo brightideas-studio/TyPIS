@@ -3,7 +3,7 @@ import path from 'node:path';
 import readXlsxFile from 'read-excel-file/node';
 
 const root=process.cwd();
-const workbookPath=path.join(root,'data','TY_Product_Database.xlsx');
+const workbookPath=process.env.TY_PRODUCT_DATABASE_PATH||path.join(root,'data','TY_Product_Database.xlsx');
 const sourcePath=path.join(root,'index.html');
 const outputDir=path.join(root,'dist');
 
@@ -72,13 +72,14 @@ const stockItems=exRows.map(row=>({
   sourcePage:number(row['Source Page']),lifecycleStatus:text(row['Lifecycle Status']),image:text(row.Image)?`product-images/${text(row.Image).replace(/^product-images\//,'')}`:''
 }));
 
-const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power']);
+const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power','Clearance Price','Retail Price']);
 // Brand section headings and prepared blank entry rows intentionally have no SKU.
 const specificationRows=specificationSheetRows.filter(row=>text(row.SKU)!=='');
 ensureUnique(specificationRows,'SKU','Specifications');
 const productSpecifications=Object.fromEntries(specificationRows.map(row=>[text(row.SKU),{
   name:text(row['Product Name']),dimension:text(row.Dimension),capacity:text(row.Capacity),temperature:text(row.Temperature),
   refrigerant:text(row.Refrigerant),energyRating:text(row['Energy Rating']),eegClaimable:text(row['EEG Claimable']),power:text(row.Power),
+  clearancePrice:price(row['Clearance Price']),retailPrice:price(row['Retail Price']),
   category:text(row.Category),productType:text(row['Product Type']),brand:text(row.Brand)
 }]));
 
@@ -112,8 +113,24 @@ for(const row of lineupRows){
   productLineups[key]??=[];
   if(!productLineups[key].some(item=>item.sku===sku))productLineups[key].push({sku,type});
 }
-// Product Guide is a curated focus list. Specifications remains the full
-// product database, while Brand Lineup decides which SKUs are showcased here.
+// Every completed specification appears automatically in Product Guide.
+// Brand Lineup remains available for manual-only SKUs and category overrides.
+const automaticLineupType=row=>{
+  const product=text(row['Product Type']).toLowerCase(),name=text(row['Product Name']).toLowerCase();
+  if(product.includes('refrigerator')){
+    if(name.includes('combination'))return 'Combination';
+    if(name.includes('freezer'))return 'Freezer';
+    return 'Chiller';
+  }
+  return text(row['Product Name'])||text(row['Product Type']);
+};
+for(const row of specificationRows){
+  const product=text(row['Product Type']),brand=brandName(row.Brand),sku=text(row.SKU),type=automaticLineupType(row);
+  if(!product||!brand||!sku)continue;
+  const key=`${product}||${brand}`;
+  productLineups[key]??=[];
+  if(!productLineups[key].some(item=>item.sku===sku))productLineups[key].push({sku,type});
+}
 
 let html=await fs.readFile(sourcePath,'utf8');
 html=replaceLiteral(html,'stockItems',stockItems);
