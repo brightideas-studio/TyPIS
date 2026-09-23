@@ -72,9 +72,10 @@ const stockItems=exRows.map(row=>({
   sourcePage:number(row['Source Page']),lifecycleStatus:text(row['Lifecycle Status']),image:text(row.Image)?`product-images/${text(row.Image).replace(/^product-images\//,'')}`:''
 }));
 
-const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power','Clearance Price','Retail Price']);
+const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power','Clearance Price','Retail Price','Lineup Category','Show in Product Guide']);
 // Brand section headings and prepared blank entry rows intentionally have no SKU.
 const specificationRows=specificationSheetRows.filter(row=>text(row.SKU)!=='');
+const showInProductGuide=row=>text(row['Show in Product Guide']).toLowerCase()!=='no';
 ensureUnique(specificationRows,'SKU','Specifications');
 const productSpecifications=Object.fromEntries(specificationRows.map(row=>[text(row.SKU),{
   name:text(row['Product Name']),dimension:text(row.Dimension),capacity:text(row.Capacity),temperature:text(row.Temperature),
@@ -100,6 +101,7 @@ const lineupSheetRows=await rowsFromSheet('Brand Lineup',['Main Category','Produ
 const lineupRows=lineupSheetRows.filter(row=>text(row.SKU)!=='');
 const productLineups={};
 const specificationProductBySku=new Map(specificationRows.map(row=>[text(row.SKU),text(row['Product Type'])]));
+const specificationVisibilityBySku=new Map(specificationRows.map(row=>[text(row.SKU),showInProductGuide(row)]));
 for(const row of lineupRows){
   const mainCategory=text(row['Main Category']),product=text(row['Product Guide Section']),type=text(row['Lineup Category']),brand=brandName(row.Brand),sku=text(row.SKU);
   if(!mainCategory||!product||!type||!brand||!sku)throw new Error(`Brand Lineup: Main Category, Product Guide Section, Brand, Lineup Category and SKU are required at row ${row.__row}`);
@@ -109,6 +111,7 @@ for(const row of lineupRows){
   // When a completed specification exists, its Product Guide section remains
   // authoritative so a focus SKU cannot accidentally appear in two sections.
   if(specificationProductBySku.has(sku)&&specificationProductBySku.get(sku)!==product)continue;
+  if(specificationVisibilityBySku.get(sku)===false)continue;
   const key=`${product}||${brand}`;
   productLineups[key]??=[];
   if(!productLineups[key].some(item=>item.sku===sku))productLineups[key].push({sku,type});
@@ -125,7 +128,8 @@ const automaticLineupType=row=>{
   return text(row['Product Name'])||text(row['Product Type']);
 };
 for(const row of specificationRows){
-  const product=text(row['Product Type']),brand=brandName(row.Brand),sku=text(row.SKU),type=automaticLineupType(row);
+  if(!showInProductGuide(row))continue;
+  const product=text(row['Product Type']),brand=brandName(row.Brand),sku=text(row.SKU),type=text(row['Lineup Category'])||automaticLineupType(row);
   if(!product||!brand||!sku)continue;
   const key=`${product}||${brand}`;
   productLineups[key]??=[];
