@@ -779,7 +779,7 @@
     function guideBrandNames(item){
       const names=[];
       item.brands.split(' · ').forEach(segment=>{let brand=brandFromText(segment);if(names.length&&/^[A-Z]{2,}[-\d]/.test(segment.trim()))brand=names[names.length-1];if(brand&&!names.includes(brand))names.push(brand)});
-      return names;
+      return names.filter(brand=>(productLineups[`${item.name}||${brand}`]||[]).length);
     }
     function brandInitials(brand){return brand.split(/\s+/).map(word=>word[0]).join('').slice(0,2).toUpperCase()}
     function guideBrandCards(item){
