@@ -72,7 +72,7 @@ const stockItems=exRows.map(row=>({
   sourcePage:number(row['Source Page']),lifecycleStatus:text(row['Lifecycle Status']),image:text(row.Image)?`product-images/${text(row.Image).replace(/^product-images\//,'')}`:''
 }));
 
-const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power','Clearance Price','Retail Price','Lineup Category','Show in Product Guide']);
+const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power','Clearance Price','Retail Price','Lineup Category','Show in Product Guide','Remark']);
 // Brand section headings and prepared blank entry rows intentionally have no SKU.
 const specificationRows=specificationSheetRows.filter(row=>text(row.SKU)!=='');
 const showInProductGuide=row=>text(row['Show in Product Guide']).toLowerCase()!=='no';
@@ -81,7 +81,7 @@ const productSpecifications=Object.fromEntries(specificationRows.map(row=>[text(
   name:text(row['Product Name']),dimension:text(row.Dimension),capacity:text(row.Capacity),temperature:text(row.Temperature),
   refrigerant:text(row.Refrigerant),energyRating:text(row['Energy Rating']),eegClaimable:text(row['EEG Claimable']),power:text(row.Power),
   clearancePrice:price(row['Clearance Price']),retailPrice:price(row['Retail Price']),
-  category:text(row.Category),productType:text(row['Product Type']),brand:text(row.Brand)
+  category:text(row.Category),productType:text(row['Product Type']),brand:text(row.Brand),remark:text(row.Remark)
 }]));
 
 const guideRows=await rowsFromSheet('Product Guide',['Category','Product','Brands & Series','Lead Time','Our Focus','Images','Questions to Ask','Important Notes']);
@@ -133,7 +133,9 @@ for(const row of specificationRows){
   if(!product||!brand||!sku)continue;
   const key=`${product}||${brand}`;
   productLineups[key]??=[];
-  if(!productLineups[key].some(item=>item.sku===sku))productLineups[key].push({sku,type});
+  const existing=productLineups[key].find(item=>item.sku===sku);
+  if(existing)existing.type=type;
+  else productLineups[key].push({sku,type});
 }
 
 let html=await fs.readFile(sourcePath,'utf8');
@@ -142,6 +144,9 @@ html=replaceLiteral(html,'productSpecifications',productSpecifications);
 html=replaceLiteral(html,'guideItems',guideItems);
 html=replaceLiteral(html,'productLineups',productLineups);
 html=html.replace(/\d+ stock records · Updated/g,`${stockItems.length} stock records · Updated`);
+html=html.replace(/Last updated \d{1,2} (?:Sep|September) 2026<\/footer>/g,'Last updated 24 Sep 2026</footer>');
+html=html.replace(/Stock dated \d{1,2} (?:Sep|September) 2026/g,'Stock dated 24 Sep 2026');
+html=html.replace(/Internal clearance price list · Last updated \d{1,2} (?:Sep|September) 2026/g,'Internal clearance price list · Last updated 24 September 2026');
 
 await fs.rm(outputDir,{recursive:true,force:true});
 await fs.mkdir(outputDir,{recursive:true});
