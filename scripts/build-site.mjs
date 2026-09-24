@@ -72,7 +72,7 @@ const stockItems=exRows.map(row=>({
   sourcePage:number(row['Source Page']),lifecycleStatus:text(row['Lifecycle Status']),image:text(row.Image)?`product-images/${text(row.Image).replace(/^product-images\//,'')}`:''
 }));
 
-const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power','Clearance Price','Retail Price','Lineup Category','Show in Product Guide','Remark']);
+const specificationSheetRows=await rowsFromSheet('Specifications',['Category','Product Type','Brand','SKU','Product Name','Dimension','Capacity','Temperature','Refrigerant','Energy Rating','EEG Claimable','Power','Clearance Price','Retail Price','Lineup Category','Show in Product Guide','Remark','Image']);
 // Brand section headings and prepared blank entry rows intentionally have no SKU.
 const specificationRows=specificationSheetRows.filter(row=>text(row.SKU)!=='');
 const showInProductGuide=row=>text(row['Show in Product Guide']).toLowerCase()!=='no';
@@ -81,7 +81,8 @@ const productSpecifications=Object.fromEntries(specificationRows.map(row=>[text(
   name:text(row['Product Name']),dimension:text(row.Dimension),capacity:text(row.Capacity),temperature:text(row.Temperature),
   refrigerant:text(row.Refrigerant),energyRating:text(row['Energy Rating']),eegClaimable:text(row['EEG Claimable']),power:text(row.Power),
   clearancePrice:price(row['Clearance Price']),retailPrice:price(row['Retail Price']),
-  category:text(row.Category),productType:text(row['Product Type']),brand:text(row.Brand),remark:text(row.Remark)
+  category:text(row.Category),productType:text(row['Product Type']),brand:text(row.Brand),remark:text(row.Remark),
+  image:text(row.Image)?`product-images/${text(row.Image).replace(/^product-images\//,'')}`:''
 }]));
 
 const guideRows=await rowsFromSheet('Product Guide',['Category','Product','Brands & Series','Lead Time','Our Focus','Images','Questions to Ask','Important Notes']);
